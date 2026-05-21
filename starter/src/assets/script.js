@@ -9,49 +9,24 @@
    - productId: unique id for the product (number)
    - image: picture of product (url string)
 */
-// const cherry={
-//   name: "Cherry",
-//   price: 4,
-//   quantity: 0,
-//   productId: 1,
-//   image: "images/cherry.jpg"
-// };
-
-// const orange={
-//   name: "Orange",
-//   price: 5,
-//   quantity: 0,
-//   productId: 2,
-//   image: "images/orange.jpg"
-// };
-
-// const strawberry={
-//   name: "Strawberry",
-//   price: 10,
-//   quantity: 0,
-//   productId: 3,
-//   image: "images/strawberry.jpg"
-// };
-
-// products.push(cherry,orange, strawberry);
 const products = [
   {
     name: "Cherry",
-    price: 2.5,
+    price: 5.0,
     quantity: 0,
     image: "images/cherry.jpg",
     productId: 101
   },
   {
     name: "Orange",
-    price: 1.5,
+    price: 3.0,
     quantity: 0,
     image: "images/orange.jpg",
     productId: 102
   },
   {
     name: "Strawberry",
-    price: 3.0,
+    price: 2.0,
     quantity: 0,
     image: "images/strawberry.jpg",
     productId: 103
@@ -93,10 +68,10 @@ function addProductToCart(productId) {
   - increaseQuantity should get the correct product based on the productId
   - increaseQuantity should then increase the product's quantity
 */
-function increaseQuantity(productId){
-  const product=products.find(p=>p.productId ===productId);
-  if(product){
-    product.quantity += 1;
+function increaseQuantity(productId) {
+  const cartItem = findProductById(cart, productId);
+  if (cartItem) {
+    cartItem.quantity += 1;
   }
 }
 
@@ -105,16 +80,12 @@ function increaseQuantity(productId){
   - decreaseQuantity should decrease the quantity of the product
   - if the function decreases the quantity to 0, the product is removed from the cart
 */
-function decreaseQuantity(productId){
-  const product=products.find(p=>p.productId ===productId);
-  if(!product)return;
-  product.quantity -= 1;
-
-  if(product.quantity===0){
-    const cartIndex = cart.findIndex(item=>item.productId ===productId);
-    if(cartIndex!== -1){
-      cart.splice(cartIndex,1);
-    }
+function decreaseQuantity(productId) {
+  const cartItem = findProductById(cart, productId);
+  if (!cartItem) return;
+  cartItem.quantity -= 1;
+  if (cartItem.quantity === 0) {
+    removeProductFromCart(productId);
   }
 }
 
@@ -123,14 +94,14 @@ function decreaseQuantity(productId){
   - removeProductFromCart should update the product quantity to 0
   - removeProductFromCart should remove the product from the cart
 */
-function removeProductFromCart(productId){
-  const product = products.find(p=>p.productId ===productId);
-  if (product){
-    product.quantity=0;
+function removeProductFromCart(productId) {
+  const product = findProductById(products, productId);
+  if (product) {
+    product.quantity = 0;
   }
-  const cartIndex = cart.findIndex(item=>item.productId ===productId);
-  if(cartIndex!== -1){
-    cart.splice(cartIndex,1);
+  const index = cart.findIndex(item => item.productId === productId);
+  if (index > -1) {
+    cart.splice(index, 1);
   }
 }
 
@@ -139,16 +110,18 @@ function removeProductFromCart(productId){
   - cartTotal should return the total cost of the products in the cart
   Hint: price and quantity can be used to determine total cost
 */
-function cartTotal(){
-  return cart.reduce((total,item)=>total+(item.quantity * item.price),0);
+function cartTotal() {
+  let grandTotal = 0;
+  for (let i = 0; i < cart.length; i++) {
+    grandTotal += cart[i].price * cart[i].quantity;
+  }
+  return grandTotal;
 }
 
 /* Create a function called emptyCart that empties the products from the cart */
-function emptyCart(){
-  products.forEach(product => {
-    product.quantity = 0;
-  });
-  cart.length=0;
+function emptyCart() {
+  products.forEach(item => item.quantity = 0);
+  cart.length = 0; // Clears the array while preserving the original reference
 }
 
 /* Create a function named pay that takes in an amount as an argument
@@ -157,10 +130,18 @@ function emptyCart(){
   - pay will return a positive number if money should be returned to customer
   Hint: cartTotal function gives us cost of all the products in the cart  
 */
-function pay(amt){
-  totalPaid+=amt;
-  return totalPaid-cartTotal();
+function pay(amount) {
+  totalPaid += amount;
+  const grandTotal = cartTotal();
+  const diff = totalPaid - grandTotal;
+  if (diff >= 0) {
+    totalPaid = 0;
+    emptyCart();
+    return diff;
+  }
+  return Math.abs(diff);
 }
+
 /* Place stand out suggestions here (stand out suggestions can be found at the bottom of the project rubric.)*/
 
 

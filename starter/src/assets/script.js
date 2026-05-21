@@ -1,5 +1,5 @@
 /* Create an array named products which you will use to add all of your product object literals that you create in the next step. */
-const products = [];
+// const products = [];
 
 /* Create 3 or more product objects using object literal notation 
    Each product should include five properties
@@ -9,31 +9,54 @@ const products = [];
    - productId: unique id for the product (number)
    - image: picture of product (url string)
 */
-const cherry={
-  name: "Cherry",
-  price: 4,
-  quantity: 0,
-  productId: 1,
-  image: "images/cherry.jpg"
-};
+// const cherry={
+//   name: "Cherry",
+//   price: 4,
+//   quantity: 0,
+//   productId: 1,
+//   image: "images/cherry.jpg"
+// };
 
-const orange={
-  name: "Orange",
-  price: 5,
-  quantity: 0,
-  productId: 2,
-  image: "images/orange.jpg"
-};
+// const orange={
+//   name: "Orange",
+//   price: 5,
+//   quantity: 0,
+//   productId: 2,
+//   image: "images/orange.jpg"
+// };
 
-const strawberry={
-  name: "Strawberry",
-  price: 10,
-  quantity: 0,
-  productId: 3,
-  image: "images/strawberry.jpg"
-};
+// const strawberry={
+//   name: "Strawberry",
+//   price: 10,
+//   quantity: 0,
+//   productId: 3,
+//   image: "images/strawberry.jpg"
+// };
 
-products.push(cherry,orange, strawberry);
+// products.push(cherry,orange, strawberry);
+const products = [
+  {
+    name: "Cherry",
+    price: 2.5,
+    quantity: 0,
+    image: "images/cherry.jpg",
+    productId: 101
+  },
+  {
+    name: "Orange",
+    price: 1.5,
+    quantity: 0,
+    image: "images/orange.jpg",
+    productId: 102
+  },
+  {
+    name: "Strawberry",
+    price: 3.0,
+    quantity: 0,
+    image: "images/strawberry.jpg",
+    productId: 103
+  }
+];
 
 /* Images provided in /images folder. All images from Unsplash.com
    - cherry.jpg by Mae Mu
@@ -42,21 +65,30 @@ products.push(cherry,orange, strawberry);
 */
 
 /* Declare an empty array named cart to hold the items in the cart */
-const cart =[];
+let cart =[];
+let totalPaid=0;
+
+function findProductById(array, productId) {
+  return array.find(item => item.productId === productId);
+}
 
 /* Create a function named addProductToCart that takes in the product productId as an argument
   - addProductToCart should get the correct product based on the productId
   - addProductToCart should then increase the product's quantity
   - if the product is not already in the cart, add it to the cart
 */
-function addProductToCart(productId){
-  const product = products.find(p=>p.productId ===productId);
-  if(!product)return;
-  product.quantity+=1;
-  if(!cart.includes(product)){
+function addProductToCart(productId) {
+  const product = findProductById(products, productId);
+  if (!product) return;
+  const cartItem = findProductById(cart, productId);
+  if (cartItem) {
+    cartItem.quantity += 1;
+  } else {
+    product.quantity = 1;
     cart.push(product);
   }
 }
+
 /* Create a function named increaseQuantity that takes in the productId as an argument
   - increaseQuantity should get the correct product based on the productId
   - increaseQuantity should then increase the product's quantity
@@ -125,7 +157,6 @@ function emptyCart(){
   - pay will return a positive number if money should be returned to customer
   Hint: cartTotal function gives us cost of all the products in the cart  
 */
-let totalPaid=0;
 function pay(amt){
   totalPaid+=amt;
   return totalPaid-cartTotal();
